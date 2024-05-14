@@ -35,9 +35,7 @@ class Restriction:
 
     def __tuple_satisfied_inverted(self, variables: list, valid_tuple: dict):
         for var in variables:
-            if not var.assigned:
-                return False
-            if valid_tuple[var.index] != var.value:
+            if not var.assigned or valid_tuple[var.index] != var.value:
                 return False
         return True
 
