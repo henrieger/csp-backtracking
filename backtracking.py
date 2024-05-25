@@ -3,35 +3,32 @@ from constraint import Constraint
 from typing import List
 
 
-def backtracking(variables: List[Variable], constraints: List[Constraint]) -> bool:
-    return backtracking_index(0, variables, constraints)
+class Backtracker:
+    def __init__(self, variables: List[Variable], constraints: List[Constraint]):
+        self.variables = variables
+        self.constraints = constraints
 
+    def solve(self):
+        yield from self.__solve(0)
 
-def backtracking_index(
-    index: int, variables: List[Variable], constraints: List[Constraint]
-) -> bool:
+    def __solve(self, index: int):
+        if not self.all_constraints_satisfied():
+            return
 
-    if not check_restrictions(variables, constraints):
-        return False
+        if index >= len(self.variables):
+            yield [var.value for var in self.variables]
+            return
 
-    if index >= len(variables):
+        self.variables[index].assigned = True
+
+        for value in self.variables[index].domain:
+            self.variables[index].value = value
+            yield from self.__solve(index + 1)
+
+        self.variables[index].assigned = False
+
+    def all_constraints_satisfied(self) -> bool:
+        for constraint in self.constraints:
+            if not constraint.is_satisfied(self.variables):
+                return False
         return True
-
-    variables[index].assigned = True
-
-    for value in variables[index].domain:
-        variables[index].value = value
-        if backtracking_index(index + 1, variables, constraints):
-            return True
-
-    variables[index].assigned = False
-    return False
-
-
-def check_restrictions(
-    variables: List[Variable], constraints: List[Constraint]
-) -> bool:
-    for restriction in constraints:
-        if not restriction.is_satisfied(variables):
-            return False
-    return True

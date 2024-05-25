@@ -52,4 +52,4 @@ class Constraint:
         return variable.index in self.scope()
 
     def __repr__(self):
-        return f"<Restriction negative={self.negative}, scope={self.scope}, valid_values={self.valid_values}>"
+        return f"<Restriction negative={self.negative}, valid_values={self.valid_values}>"
