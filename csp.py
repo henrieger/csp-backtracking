@@ -1,6 +1,6 @@
 from variable import Variable
 from constraint import Constraint
-from backtracking import backtracking
+from backtracking import Backtracker
 from sys import argv, stdin
 
 
@@ -61,11 +61,18 @@ def main():
             tuples.append(valid)
         constraints.append(Constraint(negative, tuples))
 
-    if backtracking(variables, constraints):
-        for variable in variables:
-            print(f"x{variable.index} = {variable.value}")
-    else:
+    # Generate solutions
+    solutions = list(Backtracker(variables, constraints).solve())
+
+    # If no solution was generated, problem is declared unfeasible
+    # and program is aborted
+    if len(solutions) == 0:
         print("INVIAVEL")
+        return
+
+    # Print result of first solution
+    for index, value in enumerate(solutions[0]):
+        print(f"x{index+1} = {value}")
 
 
 if __name__ == "__main__":
