@@ -1,0 +1,15 @@
+Solver: csp.py
+Tradutor de DIMACS para o formato do CSP: dimacs_to_csp.py
+
+Para resolver um problema declarado em um arquivo do CSP:
+  csp.py [ARQUIVO]
+ou
+  [ARQUIVO] > csp.py
+
+Para traduzir um arquivo DIMACS para o formato do CSP:
+  dimacs_to_csp.py [ARQUIVO]
+ou
+  [ARQUIVO] > dimacs_to_csp.py
+
+Para resolver diretamente um problema descrito em DIMACS:
+  dimacs_to_csp.py [ARQUIVO] | csp.py
