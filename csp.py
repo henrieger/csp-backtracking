@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from variable import Variable
 from constraint import Constraint
 from backtracking import Backtracker
