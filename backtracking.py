@@ -1,17 +1,17 @@
 from variable import Variable
-from restriction import Restriction
+from constraint import Constraint
 from typing import List
 
 
-def backtracking(variables: List[Variable], restrictions: List[Restriction]) -> bool:
-    return backtracking_index(0, variables, restrictions)
+def backtracking(variables: List[Variable], constraints: List[Constraint]) -> bool:
+    return backtracking_index(0, variables, constraints)
 
 
 def backtracking_index(
-    index: int, variables: List[Variable], restrictions: List[Restriction]
+    index: int, variables: List[Variable], constraints: List[Constraint]
 ) -> bool:
 
-    if not check_restrictions(variables, restrictions):
+    if not check_restrictions(variables, constraints):
         return False
 
     if index >= len(variables):
@@ -21,7 +21,7 @@ def backtracking_index(
 
     for value in variables[index].domain:
         variables[index].value = value
-        if backtracking_index(index + 1, variables, restrictions):
+        if backtracking_index(index + 1, variables, constraints):
             return True
 
     variables[index].assigned = False
@@ -29,9 +29,9 @@ def backtracking_index(
 
 
 def check_restrictions(
-    variables: List[Variable], restrictions: List[Restriction]
+    variables: List[Variable], constraints: List[Constraint]
 ) -> bool:
-    for restriction in restrictions:
+    for restriction in constraints:
         if not restriction.is_satisfied(variables):
             return False
     return True
