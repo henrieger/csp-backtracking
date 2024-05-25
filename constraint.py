@@ -15,33 +15,33 @@ class Constraint:
     def is_satisfied(self, variables: list) -> bool:
         vars_in_restriction = [var for var in variables if self.var_in_scope(var)]
         if self.negative:
-            return self.__is_satisfied_inverted(vars_in_restriction)
+            return self.__is_satisfied_negative(vars_in_restriction)
         else:
-            return self.__is_satisfied_normal(vars_in_restriction)
+            return self.__is_satisfied_positive(vars_in_restriction)
 
     # Check if a positive constraint is satisfied
-    def __is_satisfied_normal(self, variables: list) -> bool:
+    def __is_satisfied_positive(self, variables: list) -> bool:
         for valid_tuple in self.valid_values:
-            if self.__tuple_satisfied_normal(variables, valid_tuple):
+            if self.__tuple_satisfied_positive(variables, valid_tuple):
                 return True
         return False
 
     # Check if a negative constraint is satisfied
-    def __is_satisfied_inverted(self, variables: list) -> bool:
+    def __is_satisfied_negative(self, variables: list) -> bool:
         for valid_tuple in self.valid_values:
-            if self.__tuple_satisfied_inverted(variables, valid_tuple):
+            if self.__tuple_satisfied_negative(variables, valid_tuple):
                 return False
         return True
 
     # Check if a tuple of a positive constraint is satisfied
-    def __tuple_satisfied_normal(self, variables: list, valid_tuple: dict):
+    def __tuple_satisfied_positive(self, variables: list, valid_tuple: dict):
         for var in variables:
             if var.assigned and valid_tuple[var.index] != var.value:
                 return False
         return True
 
     # Check if a tuple of a negative constraint is satisfied
-    def __tuple_satisfied_inverted(self, variables: list, valid_tuple: dict):
+    def __tuple_satisfied_negative(self, variables: list, valid_tuple: dict):
         for var in variables:
             if not var.assigned or valid_tuple[var.index] != var.value:
                 return False
@@ -52,4 +52,4 @@ class Constraint:
         return variable.index in self.scope()
 
     def __repr__(self):
-        return f"<Restriction inverted={self.negative}, scope={self.scope}, valid_values={self.valid_values}>"
+        return f"<Restriction negative={self.negative}, scope={self.scope}, valid_values={self.valid_values}>"
