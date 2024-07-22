@@ -1,55 +1,29 @@
 from variable import Variable
-from typing import List, Dict
+from typing import List, Tuple
+from itertools import product
 
 
 class Constraint:
-    def __init__(self, negative: bool, valid_values: List[Dict]):
-        self.negative = negative  # If tuple values should be treated as negative constraints
-        self.valid_values = valid_values  # Valid values for each of the variables
-
-    # Generate an iter of variables present in the scope of constraint
-    def scope(self) -> list:
-        return self.valid_values[0].keys()
+    def __init__(
+        self,
+        negative: bool,
+        scope: list,
+        valid_tuples: List[Tuple],
+    ):
+        self.negative = negative
+        self.valid_tuples = valid_tuples
+        self.scope = sorted(scope)
 
     # Check if restriction is satisfied
     def is_satisfied(self, variables: list) -> bool:
-        vars_in_restriction = [var for var in variables if self.var_in_scope(var)]
+        domains = (var.domain for var in variables if var.index in self.scope)
+        all_tuples = set(tuple(values) for values in product(*domains))
+
+        tuples = self.valid_tuples
         if self.negative:
-            return self.__is_satisfied_negative(vars_in_restriction)
-        else:
-            return self.__is_satisfied_positive(vars_in_restriction)
+            tuples = all_tuples - tuples
 
-    # Check if a positive constraint is satisfied
-    def __is_satisfied_positive(self, variables: list) -> bool:
-        for valid_tuple in self.valid_values:
-            if self.__tuple_satisfied_positive(variables, valid_tuple):
-                return True
-        return False
-
-    # Check if a negative constraint is satisfied
-    def __is_satisfied_negative(self, variables: list) -> bool:
-        for valid_tuple in self.valid_values:
-            if self.__tuple_satisfied_negative(variables, valid_tuple):
-                return False
-        return True
-
-    # Check if a tuple of a positive constraint is satisfied
-    def __tuple_satisfied_positive(self, variables: list, valid_tuple: dict):
-        for var in variables:
-            if var.assigned and valid_tuple[var.index] != var.value:
-                return False
-        return True
-
-    # Check if a tuple of a negative constraint is satisfied
-    def __tuple_satisfied_negative(self, variables: list, valid_tuple: dict):
-        for var in variables:
-            if not var.assigned or valid_tuple[var.index] != var.value:
-                return False
-        return True
-
-    # Check if variable is in scope of restriction
-    def var_in_scope(self, variable: Variable) -> bool:
-        return variable.index in self.scope()
+        return bool(all_tuples & tuples)
 
     def __repr__(self):
-        return f"<Restriction negative={self.negative}, valid_values={self.valid_values}>"
+        return f"<Constraint scope={self.scope} tuples={self.valid_tuples}>"

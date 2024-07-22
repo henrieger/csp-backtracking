@@ -9,23 +9,24 @@ class Backtracker:
         self.constraints = constraints
 
     def solve(self):
-        yield from self.__solve(0)
+        yield from self.__solve_recursive(0)
 
-    def __solve(self, index: int):
+    def __solve_recursive(self, index: int):
         if not self.all_constraints_satisfied():
             return
 
         if index >= len(self.variables):
-            yield [var.value for var in self.variables]
+            yield [var.value() for var in self.variables]
             return
 
-        self.variables[index].assigned = True
+        variable = self.variables[index]
+        old_domain = variable.domain
 
-        for value in self.variables[index].domain:
-            self.variables[index].value = value
-            yield from self.__solve(index + 1)
+        for value in old_domain:
+            variable.domain = set([value])
+            yield from self.__solve_recursive(index + 1)
 
-        self.variables[index].assigned = False
+        variable.domain = old_domain
 
     def all_constraints_satisfied(self) -> bool:
         for constraint in self.constraints:

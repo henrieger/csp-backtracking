@@ -45,7 +45,7 @@ def main():
         for token in scope_tokens[1:]:
             scope.append(int(token))
 
-        # Separate the line into tuples
+        # Separate the line into "tuples"
         tuple_line = definition[2]
         tuple_tokens = tuple_line.split()
         tuple_list = [
@@ -54,13 +54,18 @@ def main():
         ]
 
         # Create a list of dicts with tuple vars and valid values
-        tuples = []
+        tuple_dicts = []
         for tuple_values in tuple_list:
             valid = {}
             for index, value in enumerate(tuple_values):
                 valid[scope[index]] = int(value)
-            tuples.append(valid)
-        constraints.append(Constraint(negative, tuples))
+            tuple_dicts.append(valid)
+
+        # Sort values and convert to tuples
+        tuples = set(tuple(dict(sorted(t.items())).values()) for t in tuple_dicts)
+
+        # Add constraint to list
+        constraints.append(Constraint(negative, scope, tuples))
 
     # Generate solutions
     solutions = list(Backtracker(variables, constraints).solve())
