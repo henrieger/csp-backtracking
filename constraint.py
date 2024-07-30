@@ -25,5 +25,9 @@ class Constraint:
 
         return bool(all_tuples & tuples)
 
+    # Get Variable objects of all variables in restriction, in order
+    def vars_in_scope(self, variables: List[Variable]):
+        return [v for v in variables if v.index in self.scope]
+
     def __repr__(self):
         return f"<Constraint scope={self.scope} tuples={self.valid_tuples}>"
