@@ -32,7 +32,7 @@ def main():
     print(qtd_claus)
 
     # For all restrictions
-    for line in lines[1:]:
+    for line in lines[1 : qtd_claus + 1]:
         print("V")  # They are always positive restrictions
 
         # Print the vars involved in restriction
