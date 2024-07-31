@@ -39,12 +39,14 @@ class Backtracker:
 
     def review_gac(self, c: Constraint, index: int):
         vars_in_scope = c.vars_in_scope(self.variables)
-        x = vars_in_scope[index]
+        x = [v for v in vars_in_scope if v.index == index][0]
 
         consistent = True
+        new_domain = x.domain.copy()
 
         for value in x.domain:
-            tuples = (t for t in c.valid_tuples if t[index] == value)
+            tuple_index = c.get_tuple_index(index)
+            tuples = (t for t in c.valid_tuples if t[tuple_index] == value)
             value_consistent = False
             for t in tuples:
                 for i, y in enumerate(t):
@@ -54,9 +56,10 @@ class Backtracker:
                     break
 
             if not value_consistent:
-                x.domain.remove(value)
+                new_domain.remove(value)
                 consistent = False
 
+        x.domain = new_domain
         return consistent
 
     def gac_3(self):

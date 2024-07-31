@@ -65,7 +65,7 @@ def main():
         tuples = set(tuple(dict(sorted(t.items())).values()) for t in tuple_dicts)
 
         # Add constraint to list
-        constraints.append(Constraint(negative, scope, tuples))
+        constraints.append(Constraint(negative, scope, tuples, variables))
 
     # Generate solutions
     solutions = list(Backtracker(variables, constraints).solve())
