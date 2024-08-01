@@ -77,8 +77,11 @@ def main():
         return
 
     # Print result of first solution
-    for index, value in enumerate(solutions[0]):
-        print(f"x{index+1} = {value}")
+    for solution in solutions:
+        for index, value in enumerate(solution):
+            print(f"x{index+1} = {value}")
+        quit()
+        print()
 
 
 if __name__ == "__main__":

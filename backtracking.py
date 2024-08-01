@@ -2,6 +2,7 @@ from variable import Variable
 from constraint import Constraint
 from typing import List
 from collections import deque
+from copy import deepcopy
 
 
 class Backtracker:
@@ -10,26 +11,24 @@ class Backtracker:
         self.constraints = constraints
 
     def solve(self):
-        yield from self.__solve_recursive(0)
+        yield from self.__solve_recursive(deepcopy(self.variables), 0)
 
-    def __solve_recursive(self, index: int):
+    def __solve_recursive(self, variables, index: int):
         if not self.all_constraints_satisfied():
             return
 
-        if index >= len(self.variables):
-            yield [var.value() for var in self.variables]
+        if index >= len(variables):
+            yield [var.value() for var in variables]
             return
 
-        self.gac_3()
+        self.gac_3(variables)
 
-        variable = self.variables[index]
+        variable = variables[index]
         old_domain = variable.domain
 
         for value in old_domain:
             variable.domain = set([value])
-            yield from self.__solve_recursive(index + 1)
-
-        variable.domain = old_domain
+            yield from self.__solve_recursive(deepcopy(variables), index + 1)
 
     def all_constraints_satisfied(self) -> bool:
         for constraint in self.constraints:
@@ -37,8 +36,8 @@ class Backtracker:
                 return False
         return True
 
-    def review_gac(self, c: Constraint, index: int):
-        vars_in_scope = c.vars_in_scope(self.variables)
+    def review_gac(self, variables: List[Variable], c: Constraint, index: int):
+        vars_in_scope = c.vars_in_scope(variables)
         x = [v for v in vars_in_scope if v.index == index][0]
 
         consistent = True
@@ -62,7 +61,7 @@ class Backtracker:
         x.domain = new_domain
         return consistent
 
-    def gac_3(self):
+    def gac_3(self, variables: List[Variable]):
         stack = deque()
         for c in self.constraints:
             for x in c.scope:
@@ -70,7 +69,7 @@ class Backtracker:
 
         while len(stack) > 0:
             c, x = stack.pop()
-            consistent = self.review_gac(c, x)
+            consistent = self.review_gac(variables, c, x)
 
             if not consistent:
                 review_constraints = (con for con in self.constraints if x in con.scope)
