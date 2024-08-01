@@ -68,20 +68,21 @@ def main():
         constraints.append(Constraint(negative, scope, tuples, variables))
 
     # Generate solutions
-    solutions = list(Backtracker(variables, constraints).solve())
-
-    # If no solution was generated, problem is declared unfeasible
-    # and program is aborted
-    if len(solutions) == 0:
-        print("INVIAVEL")
-        return
+    solutions = Backtracker(variables, constraints).solve()
+    has_solution = False
 
     # Print result of first solution
     for solution in solutions:
+        has_solution = True
         for index, value in enumerate(solution):
             print(f"x{index+1} = {value}")
-        quit()
+        return
         print()
+
+    # If no solution was generated, problem is declared unfeasible
+    # and program is aborted
+    if not has_solution:
+        print("INVIAVEL")
 
 
 if __name__ == "__main__":
