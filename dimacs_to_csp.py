@@ -12,7 +12,7 @@ def main():
     file.close()
 
     # Remove comments
-    lines = [line for line in lines if not line.startswith("c")]
+    lines = [line.strip() for line in lines if not line.startswith("c")]
 
     if not lines[0].startswith("p cnf"):
         print("Error: no header 'p cnf' as first valid line of file")

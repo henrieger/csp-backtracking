@@ -31,7 +31,9 @@ class Backtracker:
 
         for value in old_domain:
             variable.domain = set([value])
-            yield from self.__solve_recursive(self.__sort_by_domain(variables), index + 1)
+            yield from self.__solve_recursive(
+                self.__sort_by_domain(variables), index + 1
+            )
 
     def all_constraints_satisfied(self, variables) -> bool:
         for constraint in self.constraints:
@@ -40,28 +42,18 @@ class Backtracker:
         return True
 
     def review_gac(self, variables: List[Variable], c: Constraint, index: int):
-        vars_in_scope = c.vars_in_scope(self.__sort_by_index(variables))
+        ordered_variables = self.__sort_by_index(variables)
+        vars_in_scope = c.vars_in_scope(ordered_variables)
         x = [v for v in vars_in_scope if v.index == index][0]
 
         consistent = True
-        new_domain = x.domain.copy()
 
         for value in x.domain:
-            tuple_index = c.get_tuple_index(index)
-            tuples = (t for t in c.valid_tuples if t[tuple_index] == value)
-            value_consistent = False
-            for t in tuples:
-                for i, y in enumerate(t):
-                    if y not in vars_in_scope[i].domain:
-                        break
-                    value_consistent = True
-                    break
+            value_consistent = c.value_consistent(index-1, value, ordered_variables)
 
             if not value_consistent:
-                new_domain.remove(value)
                 consistent = False
 
-        x.domain = new_domain
         return consistent
 
     def gac_3(self, variables: List[Variable]):
