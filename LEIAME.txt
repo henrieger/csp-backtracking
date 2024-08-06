@@ -13,3 +13,21 @@ ou
 
 Para resolver diretamente um problema descrito em DIMACS:
   dimacs_to_csp.py [ARQUIVO] | csp.py
+
+### ALTERAÇÕES DO TRABALHO 4 ###
+
+- Alteração no funcionamento de variáveis e restrições baseados em limitações de domínio;
+- Funções `review_gac` e `gac_3` e auxiliares no código do backtracking;
+- Diversas ordenações e reordenações das variáveis para implementar a heurística MRV;
+- Consertos e adaptações necessárias.
+
+DESEMPENHO
+
+Embora o código novo implemente a otimização GAC-3 vista em aula (generalização do algoritmo AC-3) as mudanças nas estruturas de dados e verificações parecem ter afetado significativamente o desempenho do solver, de modo que o mesmo está bem mais lento que a versão anterior.
+
+Nos testes realizados:
+- Os benchmarks de SAT solver foram resolvidos até instâncias de tamanho [[[[X]]]];
+- O problema `n-queens` só foi resolvido até uma instância de tamanho 16 ([[[TEMPO]]]);
+- Nenhuma instância do Wumpus Simplificado foi resolvida em tempo hábil.
+
+Os testes foram realizados em um processador Intel i7-7700 com clock de 3,6GHz e 16GB de memória RAM disponível.
